@@ -19,6 +19,7 @@ type ToDoContextType = {
   addToDo: (task: ToDoItem) => void;
   completeToDo: (task: ToDoItem) => void;
   deleteToDo: (task: ToDoItem) => void;
+  deleteCompletedToDo: (task: ToDoItem) => void;
   addUser: (user: User) => void;
   loginUser: (username: string, email: string, password: string) => boolean;
   logoutUser: () => void;
@@ -51,10 +52,15 @@ export const ToDoProvider = ({ children }: { children: ReactNode }) => {
     setCurrentToDo(prev => prev.filter(t => t.title !== task.title));
   };
 
+  const deleteCompletedToDo = (task: ToDoItem) => {
+    setCompletedToDo(prev => prev.filter(t => t.title !== task.title));
+  };
+
   const addUser = (user: User) => {
     setUsers(prev => [...prev, user]);
   };
 
+  
   const loginUser = (username: string, email: string, password: string) => {
     const user = users.find(u => u.username === username && u.email === email && u.password === password);
     if (user) {
@@ -78,6 +84,7 @@ export const ToDoProvider = ({ children }: { children: ReactNode }) => {
         addToDo,
         completeToDo,
         deleteToDo,
+        deleteCompletedToDo,
         addUser,
         loginUser,
         logoutUser

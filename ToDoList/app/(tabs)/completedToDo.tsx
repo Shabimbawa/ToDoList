@@ -3,7 +3,7 @@ import { useToDo } from '@/context/ToDoContext';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function CompletedToDoPage() {
-  const { completedToDo, deleteToDo } = useToDo();
+  const { completedToDo, deleteCompletedToDo } = useToDo();
 
   const completedToDos = completedToDo;
 
@@ -21,7 +21,7 @@ export default function CompletedToDoPage() {
               <View style={styles.textContainer}>
                 <Text style={styles.title}>{item.title}</Text>
               </View>
-              <TouchableOpacity onPress={() => deleteToDo(item)}>
+              <TouchableOpacity onPress={() => deleteCompletedToDo(item)}>
                 <Ionicons name="trash-outline" size={24} color="#ff3b30" />
               </TouchableOpacity>
             </View>
