@@ -4,52 +4,78 @@ import { useToDo } from '@/context/ToDoContext';
 import { useRouter } from 'expo-router';
 
 const SignUp = () => {
-  const { users, addUser } = useToDo();
   const router = useRouter();
 
-  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSignUp = () => {
-    if (!username || !email || !password || !confirmPassword) {
-      Alert.alert('All fields are required.');
+  const handleSignUp = async () => {
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Please fill out all fields.');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Passwords do not match.');
+      Alert.alert('Error', 'Passwords do not match!');
       return;
     }
 
-    const existingUser = users.find(
-      (u) => u.username === username || u.email === email
-    );
+    try {
+      const response = await fetch(`https://todo-list.dcism.org/signup_action.php/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          password,
+          confirm_password: confirmPassword
+        }),
+      });
 
-    if (existingUser) {
-      Alert.alert('Username or email is already in use.');
-      return;
+      console.log('Response:', response);
+
+      const data = await response.json();
+
+      if (data.status !== 200) {
+        Alert.alert('Error', data.message || 'Failed to sign up.');
+        return;
+      }
+
+      Alert.alert('Success', 'Account created successfully!');
+      router.replace('/LoginPage'); 
+    } catch (error: any) {
+      console.error('Signup Error:', error);
+      Alert.alert('Error', error.message || 'Failed to sign up.');
     }
-
-    addUser({ username, email, password });
-    Alert.alert('Account created successfully! Please log in.');
-    router.replace('/LoginPage');;
   };
 
   const goToLogin = () => {
     router.replace('/LoginPage');
   };
 
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
 
       <TextInput
-        placeholder="Username"
+        placeholder="First Name"
         style={styles.input}
-        value={username}
-        onChangeText={setUsername}
+        value={firstName}
+        onChangeText={setFirstName}
+      />
+
+      <TextInput
+        placeholder="Last Name"
+        style={styles.input}
+        value={lastName}
+        onChangeText={setLastName}
       />
 
       <TextInput

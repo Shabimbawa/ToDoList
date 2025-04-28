@@ -4,31 +4,33 @@ import { useToDo } from '../context/ToDoContext';
 import { useRouter } from 'expo-router'; // Import the router
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { loginUser } = useToDo();
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
-  const handleLogin = () => {
-    if (!username || !email || !password) {
-      Alert.alert('Error', 'All fields are required.');
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill out all fields.');
       return;
     }
 
-    const success = loginUser(username, email, password);
+    const response = await fetch(`https://todo-list.dcism.org/signin_action.php?email=${email}&password=${password}`, {
+      method: 'GET',
+    });
 
-    if (success) {
-      Alert.alert('Login Successful', 'You are now logged in.');
-      router.replace('/(tabs)/currentToDo');
-      // Navigate to main app screen, e.g., router.replace('/home');
-    } else {
-      Alert.alert('Login Failed', 'Invalid credentials.');
+    const data = await response.json();
+
+    if (data.status === 200) {
+        Alert.alert('Login Successful', 'You are now logged in.');
+        router.replace('/(tabs)/currentToDo');
+        return;
     }
+
+    Alert.alert('Error', 'Invalid username or password.');
   };
 
   const navigateToSignUp = () => {
-    router.push('/SignupPage'); // Navigate to signup page
+    router.push('/SignupPage');
   };
 
   return (
@@ -41,12 +43,6 @@ const LoginPage = () => {
 
       <Text style={styles.heading}>Login</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
       <TextInput
         style={styles.input}
         placeholder="Email"
