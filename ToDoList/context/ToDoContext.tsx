@@ -6,7 +6,6 @@ type ToDoItem = {
 };
 
 type User = {
-  username: string;
   email: string;
   password: string;
 };
@@ -21,7 +20,7 @@ type ToDoContextType = {
   deleteToDo: (task: ToDoItem) => void;
   deleteCompletedToDo: (task: ToDoItem) => void;
   addUser: (user: User) => void;
-  loginUser: (username: string, email: string, password: string) => boolean;
+  loginUser: (email: string, password: string) => boolean;
   logoutUser: () => void;
 };
 
@@ -33,8 +32,8 @@ export const ToDoProvider = ({ children }: { children: ReactNode }) => {
 
   // Initialize with mock users
   const [users, setUsers] = useState<User[]>([
-    { username: 'MarkJohn', email: 'MarkJohn@gmail.com', password: '123456' },
-    { username: 'JaneDoe', email: 'JaneDoe@gmail.com', password: '123456' }
+    { email: 'MarkJohn@gmail.com', password: '123456' },
+    { email: 'JaneDoe@gmail.com', password: '123456' }
   ]);
 
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -60,14 +59,13 @@ export const ToDoProvider = ({ children }: { children: ReactNode }) => {
     setUsers(prev => [...prev, user]);
   };
 
-  
-  const loginUser = (username: string, email: string, password: string) => {
-    const user = users.find(u => u.username === username && u.email === email && u.password === password);
+  const loginUser = (email: string, password: string) => {
+    const user = users.find(u => u.email === email && u.password === password);
     if (user) {
       setLoggedInUser(user);
-      return true; // Successful login
+      return true;
     }
-    return false; // Failed login
+    return false;
   };
 
   const logoutUser = () => {
