@@ -17,7 +17,6 @@ const Profile = () => {
         resizeMode="contain"
       />
 
-      <Text style={styles.title}>Welcome, {loggedInUser.username}!</Text>
       <Text style={styles.info}>Email: {loggedInUser.email}</Text>
 
       <View style={styles.buttonContainer}>
