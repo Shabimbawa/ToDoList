@@ -6,27 +6,54 @@ import { useRouter } from 'expo-router'; // Import the router
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState<'error' | 'success' | ''>('');
+
   const router = useRouter();
 
   const handleLogin = async () => {
+    setMessage('');
+    setMessageType('');
+
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill out all fields.');
+      setMessage('Please fill out all fields.');
+      setMessageType('error');
       return;
     }
 
-    const response = await fetch(`https://todo-list.dcism.org/signin_action.php?email=${email}&password=${password}`, {
-      method: 'GET',
-    });
+    try {
+      const response = await fetch(
+        `https://todo-list.dcism.org/signin_action.php?email=${email}&password=${password}`,
+        {
+          method: 'GET',
+        }
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.status === 200) {
-        Alert.alert('Login Successful', 'You are now logged in.');
-        router.replace('/(tabs)/currentToDo');
+      if (data.status === 200) {
+        setMessage('Success.');
+        setMessageType('success');
+
+        setTimeout(() => {
+          router.replace('/(tabs)/currentToDo');
+        }, 1000);
         return;
-    }
+      }
 
-    Alert.alert('Error', 'Invalid username or password.');
+      if (data.message?.toLowerCase().includes('not exist')) {
+        setMessage('Account does not exist.');
+      } else if (data.message?.toLowerCase().includes('password')) {
+        setMessage('Passwords do not match.');
+      } else {
+        setMessage('Invalid username or password.');
+      }
+      setMessageType('error');
+    } catch (error: any) {
+      console.error('Login Error:', error);
+      setMessage('An error occurred. Please try again.');
+      setMessageType('error');
+    }
   };
 
   const navigateToSignUp = () => {
@@ -58,6 +85,12 @@ const LoginPage = () => {
         onChangeText={setPassword}
       />
 
+      {message !== '' && (
+        <Text style={messageType === 'error' ? styles.errorText : styles.successText}>
+          {message}
+        </Text>
+      )}
+
       <Button title="Login" onPress={handleLogin} />
 
       <Text style={styles.footer}>
@@ -86,7 +119,7 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     padding: 12,
-    marginBottom: 16,
+    marginBottom: 12,
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#ccc',
@@ -104,6 +137,18 @@ const styles = StyleSheet.create({
     height: 120,
     marginBottom: 24,
     borderRadius: 60,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginBottom: 12,
+    alignSelf: 'flex-start',
+  },
+  successText: {
+    color: 'green',
+    fontSize: 12,
+    marginBottom: 12,
+    alignSelf: 'flex-start',
   },
 });
 
