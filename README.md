@@ -1,4 +1,6 @@
-# ToDoList - Expo App! ✨
+# ToDoList - Built with Expo
+
+![Expo Logo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSumFQDq2SU3g4tMc0eiDKXcHLg_pflbGx00w&s)
 
 Get your Expo app running quickly with these two commands:
 
@@ -9,8 +11,6 @@ Get your Expo app running quickly with these two commands:
     ```bash
     npm install
     ```
-
-    This command will install all the necessary packages listed in your `package.json` file.
 
 2.  **Start the Development Server:** Once the installation is complete, start the Expo development server with:
 
