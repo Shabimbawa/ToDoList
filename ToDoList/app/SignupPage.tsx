@@ -12,14 +12,23 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState<'error' | 'success' | ''>('');
+
   const handleSignUp = async () => {
+    // Reset message
+    setMessage('');
+    setMessageType('');
+
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill out all fields.');
+      setMessage('Please fill out all fields.');
+      setMessageType('error');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match!');
+      setMessage('Passwords do not match.');
+      setMessageType('error');
       return;
     }
 
@@ -38,27 +47,35 @@ const SignUp = () => {
         }),
       });
 
-      console.log('Response:', response);
-
       const data = await response.json();
 
       if (data.status !== 200) {
-        Alert.alert('Error', data.message || 'Failed to sign up.');
+        if (data.message?.toLowerCase().includes('email')) {
+          setMessage('Email already exists.');
+        } else {
+          setMessage(data.message || 'Failed to sign up.');
+        }
+        setMessageType('error');
         return;
       }
 
-      Alert.alert('Success', 'Account created successfully!');
-      router.replace('/LoginPage'); 
+      setMessage('Account created successfully.');
+      setMessageType('success');
+
+      setTimeout(() => {
+        router.replace('/LoginPage');
+      }, 1500);
+
     } catch (error: any) {
       console.error('Signup Error:', error);
-      Alert.alert('Error', error.message || 'Failed to sign up.');
+      setMessage(error.message || 'Failed to sign up.');
+      setMessageType('error');
     }
   };
 
   const goToLogin = () => {
     router.replace('/LoginPage');
   };
-
 
   return (
     <View style={styles.container}>
@@ -102,6 +119,12 @@ const SignUp = () => {
         onChangeText={setConfirmPassword}
         secureTextEntry
       />
+
+      {message !== '' && (
+        <Text style={messageType === 'error' ? styles.errorText : styles.successText}>
+          {message}
+        </Text>
+      )}
 
       <TouchableOpacity style={styles.button} onPress={handleSignUp}>
         <Text style={styles.buttonText}>Create Account</Text>
@@ -154,5 +177,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16,
     textDecorationLine: 'underline',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  successText: {
+    color: 'green',
+    fontSize: 12,
+    marginBottom: 8,
+    marginLeft: 4,
   },
 });
