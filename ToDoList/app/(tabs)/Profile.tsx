@@ -1,14 +1,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, Image } from 'react-native';
-import { useToDo } from '@/context/ToDoContext';
 
 const Profile = () => {
-  const { loggedInUser, logoutUser } = useToDo();
-
-  if (!loggedInUser) {
-    return null;
-  }
-
   return (
     <View style={styles.container}>
       <Image
@@ -17,16 +10,14 @@ const Profile = () => {
         resizeMode="contain"
       />
 
-      <Text style={styles.info}>Email: {loggedInUser.email}</Text>
+      <Text style={styles.info}>Email: user@example.com</Text>
 
       <View style={styles.buttonContainer}>
-        <Button title="Logout" color="#ff5c5c" onPress={logoutUser} />
+        <Button title="Logout" color="#ff5c5c" onPress={() => {}} />
       </View>
     </View>
   );
 };
-
-export default Profile;
 
 const styles = StyleSheet.create({
   container: {
@@ -40,12 +31,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     marginBottom: 24,
-    borderRadius: 60, // if you want a circle
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    borderRadius: 60,
   },
   info: {
     fontSize: 18,
@@ -55,3 +41,5 @@ const styles = StyleSheet.create({
     width: '60%',
   },
 });
+
+export default Profile;

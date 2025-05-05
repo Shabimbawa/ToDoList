@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {   View,  Text,  TextInput,  TouchableOpacity,  StyleSheet,  Alert} from 'react-native';
+import { View,  Text,  TextInput,  TouchableOpacity,  StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 
 const SignUp = () => {
@@ -137,8 +137,6 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -189,3 +187,5 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
 });
+
+export default SignUp;

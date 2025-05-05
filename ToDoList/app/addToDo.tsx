@@ -1,18 +1,16 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { useState } from 'react';
-import { useToDo } from '@/context/ToDoContext';
 import { useRouter } from 'expo-router';
 
-export default function AddToDoPage() {
+const Add = () => {
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
-  const { addToDo } = useToDo();
   const router = useRouter();
 
   const handleAdd = () => {
-    if (title.trim() === '') return; // prevent empty titles
-    addToDo({ title, details });
-    router.back(); // go back to previous screen
+    if (title.trim() === '') return;
+    // Add your todo handling logic here
+    router.back();
   };
 
   return (
@@ -40,7 +38,7 @@ export default function AddToDoPage() {
       </TouchableOpacity>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -80,3 +78,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+export default Add;
