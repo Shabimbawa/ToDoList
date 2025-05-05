@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {   View,  Text,  TextInput,  TouchableOpacity,  StyleSheet,  Alert} from 'react-native';
-import { useToDo } from '@/context/ToDoContext';
 import { useRouter } from 'expo-router';
 
 const SignUp = () => {
@@ -16,7 +15,6 @@ const SignUp = () => {
   const [messageType, setMessageType] = useState<'error' | 'success' | ''>('');
 
   const handleSignUp = async () => {
-    // Reset message
     setMessage('');
     setMessageType('');
 

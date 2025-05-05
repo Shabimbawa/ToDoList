@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert, Image, Pressable } from 'react-native';
-import { useToDo } from '../context/ToDoContext';
-import { useRouter } from 'expo-router'; // Import the router
+import { useRouter } from 'expo-router';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
