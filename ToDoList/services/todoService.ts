@@ -67,4 +67,6 @@ export const todoService = {
     };
     return makePostRequest('deleteItem_action.php', data);
   }
-}; 
+};
+
+export type { TodoItem, User };

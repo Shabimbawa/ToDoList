@@ -70,7 +70,7 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await AsyncStorage.setItem('user', JSON.stringify(response.data));
         await refreshTodos();
       } else {
-        setError(response.message);
+        setError(response.message ?? 'An unknown error occurred');
       }
     } catch (err) {
       setError('Failed to sign in');
@@ -87,7 +87,7 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.status === 200) {
         await signIn(data.email, data.password);
       } else {
-        setError(response.message);
+        setError(response.message ?? 'An unknown error occurred');
       }
     } catch (err) {
       setError('Failed to sign up');

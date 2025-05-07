@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,47 +9,69 @@ const Add = () => {
   const [details, setDetails] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<'success' | 'error' | null>(null);
   const router = useRouter();
 
   const handleAdd = async () => {
-    if (title.trim() === '') {
-      setError('Title is required');
+    const trimmedTitle = title.trim();
+    const trimmedDetails = details.trim();
+  
+    if (!trimmedTitle && !trimmedDetails) {
+      setError('Please input both fields.');
+      setMessageType('error');
       return;
     }
-
+  
+    if (!trimmedTitle) {
+      setError('Please input title.');
+      setMessageType('error');
+      return;
+    }
+  
+    if (!trimmedDetails) {
+      setError('Please input details.');
+      setMessageType('error');
+      return;
+    }
+  
     setLoading(true);
     setError(null);
-
+    setMessageType(null);
+  
     try {
       const userId = await AsyncStorage.getItem('userId');
-      
+  
       if (!userId) {
         console.log('No user ID found, redirecting to login');
         router.replace('/LoginPage');
         return;
       }
-
-      console.log('Adding todo item:', { title, details, userId });
-      
+  
       const response = await todoService.addTodo({
-        item_name: title,
-        item_description: details,
-        user_id: userId
+        item_name: trimmedTitle,
+        item_description: trimmedDetails,
+        user_id: userId,
       });
-      
+  
       if (response.status === 200) {
-        console.log('Todo added successfully:', response);
-        router.back();
+        setError('Added new task.');
+        setMessageType('success');
+        setTitle('');
+        setDetails('');
+        setTimeout(() => router.back(), 1000);
       } else {
         setError(response.message || 'Failed to add todo');
+        setMessageType('error');
       }
     } catch (err) {
       console.error('Error adding todo:', err);
       setError('An error occurred while adding the todo');
+      setMessageType('error');
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <KeyboardAvoidingView
@@ -59,7 +81,12 @@ const Add = () => {
       <Text style={styles.header}>Add New Task</Text>
       
       {error && (
-        <Text style={styles.errorText}>{error}</Text>
+        <Text style={[
+          styles.messageText,
+          messageType === 'success' ? styles.successText : styles.errorText
+        ]}>
+          {error}
+        </Text>
       )}
       
       <TextInput
@@ -133,6 +160,14 @@ const styles = StyleSheet.create({
     color: '#ff3b30',
     marginBottom: 15,
     textAlign: 'center',
+  },
+  messageText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  successText: {
+    color: '#28a745',
   },
 });
 
