@@ -6,10 +6,14 @@ Get your Expo app running quickly with these two commands:
 
 ## Getting Started 🚀
 
-1.  **Install Dependencies:** Navigate to your project directory in the terminal and run:
+1.  **Install Dependencies:** Navigate to your project directory in the terminal and run the following commands:
 
     ```bash
     npm install
+    ```
+
+    ```bash
+    npx expo install @react-native-async-storage/async-storage
     ```
 
 2.  **Start the Development Server:** Once the installation is complete, start the Expo development server with:
