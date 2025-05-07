@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -33,6 +34,20 @@ const Login = () => {
       if (data.status === 200) {
         setMessage('Success.');
         setMessageType('success');
+
+        // Store user data
+        try {
+          await AsyncStorage.setItem('userId', data.data.id.toString());
+          await AsyncStorage.setItem('firstName', data.data.fname);
+          await AsyncStorage.setItem('lastName', data.data.lname);
+          await AsyncStorage.setItem('email', data.data.email);
+          // Store the entire user object for convenience
+          await AsyncStorage.setItem('user', JSON.stringify(data.data));
+          console.log('User data stored successfully');
+        } catch (storageError) {
+          console.error('Failed to save user data to storage', storageError);
+          // Continue with login even if storage fails
+        }
 
         setTimeout(() => {
           router.replace('/(tabs)/currentToDo');
