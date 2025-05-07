@@ -37,10 +37,9 @@ export const todoService = {
 
   // Todo Operations
   getTodos: async (status: 'active' | 'inactive', userId: string | number): Promise<ApiResponse<Record<string, TodoItem>>> => {
-    const response = await fetch(
-      `${BASE_URL}/getItems_action.php?status=${status}&user_id=${userId}`,
-      { method: 'GET' }
-    );
+    const response = await fetch(`${BASE_URL}/getItems_action.php?status=${status}&user_id=${userId}`, { 
+      method: 'GET'
+    });
     return response.json();
   },
 
@@ -62,11 +61,11 @@ export const todoService = {
   },
 
   deleteTodo: async (itemId: number): Promise<ApiResponse> => {
-    const data = { 
-      item_id: itemId 
-    };
-    return makePostRequest('deleteItem_action.php', data);
-  }
+    const response = await fetch(`${BASE_URL}/deleteItem_action.php?item_id=${itemId}`, {
+      method: 'POST',
+    });
+    return response.json();
+  }  
 };
 
 export type { TodoItem, User };
