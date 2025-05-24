@@ -94,6 +94,13 @@ const CompletedTasks = () => {
     }
   };
 
+  const handleEdit = (itemId: number, currentTitle: string, currentDescription: string) => {
+    router.push({
+      pathname: '/editToDo',
+      params: { item_id: itemId, currentTitle, currentDescription },
+    });
+  };
+
   const onRefresh = () => {
     setRefreshing(true);
     fetchTodos();
@@ -119,6 +126,7 @@ const CompletedTasks = () => {
               description={item.item_description}
               onStatusChange={handleStatusChange}
               onDelete={handleDelete}
+              onEdit={handleEdit}
             />
           )}
           keyExtractor={item => item.item_id.toString()}
