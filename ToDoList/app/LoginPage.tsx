@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Image, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from "react";
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+} from "react-native";
+import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState<'error' | 'success' | ''>('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<"error" | "success" | "">("");
 
   const router = useRouter();
 
   const handleLogin = async () => {
-    setMessage('');
-    setMessageType('');
+    setMessage("");
+    setMessageType("");
 
     if (!email || !password) {
-      setMessage('Please fill out all fields.');
-      setMessageType('error');
+      setMessage("Please fill out all fields.");
+      setMessageType("error");
       return;
     }
 
@@ -25,59 +33,59 @@ const Login = () => {
       const response = await fetch(
         `https://todo-list.dcism.org/signin_action.php?email=${email}&password=${password}`,
         {
-          method: 'GET',
+          method: "GET",
         }
       );
 
       const data = await response.json();
 
       if (data.status === 200) {
-        setMessage('Success.');
-        setMessageType('success');
+        setMessage("Success.");
+        setMessageType("success");
 
         // Store user data
         try {
-          await AsyncStorage.setItem('userId', data.data.id.toString());
-          await AsyncStorage.setItem('firstName', data.data.fname);
-          await AsyncStorage.setItem('lastName', data.data.lname);
-          await AsyncStorage.setItem('email', data.data.email);
+          await AsyncStorage.setItem("userId", data.data.id.toString());
+          await AsyncStorage.setItem("firstName", data.data.fname);
+          await AsyncStorage.setItem("lastName", data.data.lname);
+          await AsyncStorage.setItem("email", data.data.email);
           // Store the entire user object for convenience
-          await AsyncStorage.setItem('user', JSON.stringify(data.data));
-          console.log('User data stored successfully');
+          await AsyncStorage.setItem("user", JSON.stringify(data.data));
+          console.log("User data stored successfully");
         } catch (storageError) {
-          console.error('Failed to save user data to storage', storageError);
+          console.error("Failed to save user data to storage", storageError);
           // Continue with login even if storage fails
         }
 
         setTimeout(() => {
-          router.replace('/(tabs)/currentToDo');
+          router.replace("/(tabs)/currentToDo");
         }, 1000);
         return;
       }
 
-      if (data.message?.toLowerCase().includes('not exist')) {
-        setMessage('Account does not exist.');
-      } else if (data.message?.toLowerCase().includes('password')) {
-        setMessage('Passwords do not match.');
+      if (data.message?.toLowerCase().includes("not exist")) {
+        setMessage("Account does not exist.");
+      } else if (data.message?.toLowerCase().includes("password")) {
+        setMessage("Passwords do not match.");
       } else {
-        setMessage('Invalid username or password.');
+        setMessage("Invalid username or password.");
       }
-      setMessageType('error');
+      setMessageType("error");
     } catch (error: any) {
-      console.error('Login Error:', error);
-      setMessage('An error occurred. Please try again.');
-      setMessageType('error');
+      console.error("Login Error:", error);
+      setMessage("An error occurred. Please try again.");
+      setMessageType("error");
     }
   };
 
   const navigateToSignUp = () => {
-    router.push('/SignupPage');
+    router.push("/SignupPage");
   };
 
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/images/toDoIcon.png')}
+        source={require("@/assets/images/toDoIcon.png")}
         style={styles.profileImage}
         resizeMode="contain"
       />
@@ -99,8 +107,12 @@ const Login = () => {
         onChangeText={setPassword}
       />
 
-      {message !== '' && (
-        <Text style={messageType === 'error' ? styles.errorText : styles.successText}>
+      {message !== "" && (
+        <Text
+          style={
+            messageType === "error" ? styles.errorText : styles.successText
+          }
+        >
           {message}
         </Text>
       )}
@@ -108,7 +120,7 @@ const Login = () => {
       <Button title="Login" onPress={handleLogin} />
 
       <Text style={styles.footer}>
-        Don't have an account?{' '}
+        Don't have an account?{" "}
         <Pressable onPress={navigateToSignUp}>
           <Text style={styles.link}>Sign Up</Text>
         </Pressable>
@@ -120,31 +132,33 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   heading: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 24,
   },
   input: {
-    width: '100%',
+    width: "100%",
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
     borderRadius: 8,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
   footer: {
     marginTop: 16,
-    textAlign: 'center',
+    textAlign: "center",
+    fontSize: 14,
   },
   link: {
-    color: 'blue',
-    fontWeight: 'bold',
+    color: "#007aff",
+    fontWeight: "bold",
+    fontSize: 14,
   },
   profileImage: {
     width: 120,
@@ -153,16 +167,16 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   errorText: {
-    color: 'red',
+    color: "red",
     fontSize: 12,
     marginBottom: 12,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   successText: {
-    color: 'green',
+    color: "green",
     fontSize: 12,
     marginBottom: 12,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
 });
 
