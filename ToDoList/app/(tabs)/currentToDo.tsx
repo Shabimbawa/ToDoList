@@ -83,7 +83,6 @@ const Tasks = () => {
       const response = await todoService.deleteTodo(itemId);
       
       if (response.status === 200) {
-        // Remove the deleted todo from the list
         setTodos(todos.filter(todo => todo.item_id !== itemId));
       } else {
         setError(response.message || 'Failed to delete todo');

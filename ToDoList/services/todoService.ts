@@ -62,17 +62,19 @@ export const todoService = {
 
   deleteTodo: async (itemId: number): Promise<ApiResponse> => {
     const response = await fetch(`${BASE_URL}/deleteItem_action.php?item_id=${itemId}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
+    method: 'POST',
+  });
+  
+  if (!response.ok) {
     try {
-        const errorData = await response.json();
-        return errorData;
+      const errorData = await response.json();
+      return errorData;
     } catch (e) {
-        throw new Error(`HTTP error ${response.status} while deleting item.`);
+      throw new Error(`HTTP error ${response.status} while deleting item.`);
     }
   }
-    return response.json();
+  
+  return response.json();
   }  
 };
 
