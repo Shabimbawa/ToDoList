@@ -1,17 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { todoService } from "../services/todoService";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditToDoScreen = () => {
   const router = useRouter();
@@ -36,34 +27,41 @@ const EditToDoScreen = () => {
       setDescription(params.currentDescription || "");
     }
   }, [params.item_id, params.currentTitle, params.currentDescription, itemId]);
-
+  
   const handleUpdate = async () => {
     setMessage(null);
     setMessageType(null);
-
+    
     if (!itemId) {
       setMessage("Item ID is missing.");
       setMessageType("error");
       return;
     }
+    
     const trimmedTitle = title.trim();
     const trimmedDescription = description.trim();
-
+    
     if (!trimmedTitle || !trimmedDescription) {
       setMessage("Title and description cannot be empty.");
       setMessageType("error");
       return;
     }
-
+    
     setLoading(true);
-
+    
     try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+      
       const response = await todoService.updateTodo({
         item_id: itemId,
         item_name: trimmedTitle,
         item_description: trimmedDescription,
+        user_id: userId
       });
-
+      
       if (response.status === 200) {
         setMessage("Task updated successfully.");
         setMessageType("success");
