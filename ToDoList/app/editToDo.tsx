@@ -41,8 +41,18 @@ const EditToDoScreen = () => {
     const trimmedTitle = title.trim();
     const trimmedDescription = description.trim();
     
-    if (!trimmedTitle || !trimmedDescription) {
+    if (!trimmedTitle && !trimmedDescription) {
       setMessage("Title and description cannot be empty.");
+      setMessageType("error");
+      return;
+    }
+    if (!trimmedTitle) {
+      setMessage("Title cannot be empty.");
+      setMessageType("error");
+      return;
+    }
+    if (!trimmedDescription) {
+      setMessage("Description cannot be empty.");
       setMessageType("error");
       return;
     }
